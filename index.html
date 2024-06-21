@@ -4,56 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stop the Timer Game</title>
-<style>
-  body {
-    text-align: center;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-  }
-  .timer {
-    font-size: 48px;
-    margin: 20px;
-  }
-  .message {
-    font-size: 24px;
-    margin-top: 20px;
-  }
-  .confetti {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 1000;
-  }
-  .confetti div {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: red;
-    opacity: 0;
-    animation: confetti-fall 2s linear infinite;
-  }
-  @keyframes confetti-fall {
-    to {
-      transform: translate3d(0, 100vh, 0);
-      opacity: 1;
-    }
-  }
-</style>
 </head>
 <body>
 
 <h1>Stop the Timer at Exactly 10 Seconds!</h1>
-<div class="timer" id="timer">0.00</div>
+<div id="timer">0.00</div>
 <button onclick="startTimer()">Start</button>
 <button onclick="stopTimer()">Stop</button>
-<div class="message" id="message"></div>
+<div id="message"></div>
 
-<div class="confetti" id="confetti"></div>
+<div id="confetti"></div>
 
 <script>
   let startTime;
@@ -93,17 +53,34 @@
     confettiContainer.innerHTML = ''; // Clear any existing confetti
     for (let i = 0; i < 100; i++) {
       const confetto = document.createElement('div');
-      confetto.style.left = Math.random() * 100 + 'vw';
+      confetto.style.position = 'absolute';
+      confetto.style.width = '10px';
+      confetto.style.height = '10px';
       confetto.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-      confetto.style.animationDelay = Math.random() * 2 + 's';
+      confetto.style.left = Math.random() * 100 + 'vw';
+      confetto.style.top = '0';
+      confetto.style.opacity = '0';
+      confetto.style.animation = 'confetti-fall 2s linear infinite';
       confettiContainer.appendChild(confetto);
     }
     confettiContainer.style.display = 'block';
     setTimeout(() => {
       confettiContainer.style.display = 'none';
-      document.body.style.backgroundColor = '#f0f0f0';
+      document.body.style.backgroundColor = '#ffffff';
     }, 5000);
   }
+
+  // Minimal CSS for confetti animation
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes confetti-fall {
+      to {
+        transform: translate3d(0, 100vh, 0);
+        opacity: 1;
+      }
+    }
+  `;
+  document.head.appendChild(style);
 </script>
 
 </body>
