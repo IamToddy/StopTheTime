@@ -11,7 +11,7 @@
     align-items: center;
     justify-content: center;
     font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #ff6347, #4682b4, #32cd32, #ffd700, #8a2be2);
     min-height: 100vh;
     margin: 0;
   }
@@ -26,7 +26,6 @@
     position: relative;
     width: 100%;
     height: 60vh;
-    background: linear-gradient(135deg, #ff6347, #4682b4, #32cd32, #ffd700, #8a2be2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -38,6 +37,8 @@
     background: black;
     transform-origin: 100%;
     transition: transform 0.2s ease;
+    left: 50%;
+    transform: translateX(-50%) rotate(90deg);
   }
   .second-hand {
     height: 5px;
@@ -237,13 +238,24 @@
   const colors = ['#ff6347', '#4682b4', '#32cd32', '#ffd700', '#8a2be2'];
   let pelletsCollected = 0;
   const requiredPellets = 10;
+  let speedMultiplier = 1;
 
   function updateClock() {
     const now = new Date().getTime();
-    const elapsedTime = (now - startTime) / 1000;
+    let elapsedTime = (now - startTime) / 1000;
+
+    if (elapsedTime > 5 && elapsedTime <= 10) {
+      speedMultiplier = 2;
+    } else if (elapsedTime > 10 && elapsedTime <= 15.5) {
+      speedMultiplier = 3;
+    } else if (elapsedTime > 15.5) {
+      speedMultiplier = 4;
+    }
+
+    elapsedTime = elapsedTime * speedMultiplier;
     const seconds = elapsedTime % 60;
     const secondsDeg = ((seconds / 60) * 360) + 90;
-    document.getElementById('secondHand').style.transform = `rotate(${secondsDeg}deg)`;
+    document.getElementById('secondHand').style.transform = `rotate(${secondsDeg}deg) translateX(-50%)`;
     digitalTimerElement.textContent = elapsedTime.toFixed(2);
   }
 
@@ -258,6 +270,7 @@
   function startTimer() {
     startTime = new Date().getTime();
     attempts = 0;
+    speedMultiplier = 1;
     messageElement.textContent = '';
     startClock();
   }
@@ -266,6 +279,7 @@
     stopClock();
     startTime = new Date().getTime();
     attempts = 0;
+    speedMultiplier = 1;
     messageElement.textContent = '';
     startClock();
   }
@@ -273,7 +287,7 @@
   function recordTime() {
     attempts++;
     const now = new Date().getTime();
-    const finalTime = ((now - startTime) / 1000).toFixed(2);
+    const finalTime = ((now - startTime) / 1000 * speedMultiplier).toFixed(2);
     messageElement.textContent = `Du trykket på ${finalTime} sekunder.`;
 
     if (requiredTimes.includes(parseFloat(finalTime))) {
