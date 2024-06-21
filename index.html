@@ -53,6 +53,25 @@
     transform: translate(-50%, -50%);
     border-radius: 50%;
   }
+  .number {
+    position: absolute;
+    font-size: 18px;
+    font-weight: bold;
+    color: #4682b4;
+  }
+  .number:nth-child(1)  { top: 10px; left: 50%; transform: translateX(-50%); }
+  .number:nth-child(2)  { top: 25%; left: 90%; transform: translate(-50%, -50%); }
+  .number:nth-child(3)  { top: 50%; left: 90%; transform: translate(-50%, -50%); }
+  .number:nth-child(4)  { top: 75%; left: 90%; transform: translate(-50%, -50%); }
+  .number:nth-child(5)  { top: 90%; left: 50%; transform: translateX(-50%); }
+  .number:nth-child(6)  { top: 75%; left: 10%; transform: translate(-50%, -50%); }
+  .number:nth-child(7)  { top: 50%; left: 10%; transform: translate(-50%, -50%); }
+  .number:nth-child(8)  { top: 25%; left: 10%; transform: translate(-50%, -50%); }
+  .digital-timer {
+    font-size: 48px;
+    margin-top: 20px;
+    color: #32cd32;
+  }
   .button {
     padding: 20px 40px;
     font-size: 24px;
@@ -123,9 +142,22 @@
   <h1>Stopp Tiden Spill</h1>
   <p>Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Hvis du treffer riktig tid, vil du se konfetti og skjermen vil blinke i forskjellige farger. De beste tidene vil bli lagret på lederbordet. Du har tre forsøk per gang.</p>
   <div class="clock">
+    <div class="number">12</div>
+    <div class="number">1</div>
+    <div class="number">2</div>
+    <div class="number">3</div>
+    <div class="number">4</div>
+    <div class="number">5</div>
+    <div class="number">6</div>
+    <div class="number">7</div>
+    <div class="number">8</div>
+    <div class="number">9</div>
+    <div class="number">10</div>
+    <div class="number">11</div>
     <div class="hand second-hand" id="secondHand"></div>
     <div class="center"></div>
   </div>
+  <div class="digital-timer" id="digitalTimer">0.00</div>
   <button class="button" id="stopButton" onclick="recordTime()">Stopp</button>
   <div class="message" id="message"></div>
 </div>
@@ -155,6 +187,7 @@
   const confettiContainer = document.getElementById('confetti');
   const messageElement = document.getElementById('message');
   const sadFaceElement = document.getElementById('sadFace');
+  const digitalTimerElement = document.getElementById('digitalTimer');
   let colorIndex = 0;
   const colors = ['#ff6347', '#4682b4', '#32cd32', '#ffd700', '#8a2be2'];
 
@@ -164,10 +197,11 @@
     const seconds = elapsedTime % 60;
     const secondsDeg = ((seconds / 60) * 360) + 90;
     document.getElementById('secondHand').style.transform = `rotate(${secondsDeg}deg)`;
+    digitalTimerElement.textContent = elapsedTime.toFixed(2);
   }
 
   function startClock() {
-    setInterval(updateClock, 1000);
+    setInterval(updateClock, 100);
   }
 
   function resetClock() {
@@ -202,9 +236,9 @@
       sadFaceElement.style.display = 'none';
       resetClock();
     }, 3000);
-  }
+}
 
-  function showConfettiAndBlinking() {
+function showConfettiAndBlinking() {
     showConfetti();
     let blinkInterval = setInterval(() => {
       document.body.style.backgroundColor = colors[colorIndex];
@@ -247,3 +281,4 @@
 
 </body>
 </html>
+  
