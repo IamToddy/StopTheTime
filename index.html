@@ -13,16 +13,20 @@
 <button id="stopButton" style="font-size: 1em; padding: 10px 20px;" onclick="stopTimer()">Stop</button>
 <div id="message" style="font-size: 1.5em; margin-top: 20px;"></div>
 
+<div id="confetti"></div>
+
 <script>
   let startTime;
   let timerInterval;
   let timerRunning = false;
+  const confettiContainer = document.getElementById('confetti');
 
   function startTimer() {
     if (timerRunning) return;
     startTime = new Date().getTime();
     timerInterval = setInterval(updateTimer, 10);
     document.getElementById('message').textContent = '';
+    document.body.style.backgroundColor = "#ffffff"; // Reset background color
     timerRunning = true;
   }
 
@@ -37,13 +41,58 @@
     clearInterval(timerInterval);
     const finalTime = parseFloat(document.getElementById('timer').textContent);
     if (finalTime === 10.00) {
-      document.body.style.backgroundColor = "yellow";
       document.getElementById('message').textContent = 'Gratulerer, du er dagens 10er!';
+      showConfetti();
+      startBlinking();
     } else {
       document.getElementById('message').textContent = `Du stoppet på ${finalTime.toFixed(2)} sekunder. Prøv igjen!`;
     }
     timerRunning = false;
   }
+
+  function showConfetti() {
+    confettiContainer.innerHTML = ''; // Clear any existing confetti
+    for (let i = 0; i < 100; i++) {
+      const confetto = document.createElement('div');
+      confetto.style.position = 'absolute';
+      confetto.style.width = '10px';
+      confetto.style.height = '10px';
+      confetto.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+      confetto.style.left = Math.random() * 100 + 'vw';
+      confetto.style.top = Math.random() * 100 + 'vh';
+      confetto.style.opacity = '0';
+      confetto.style.animation = 'confetti-fall 2s linear infinite';
+      confettiContainer.appendChild(confetto);
+    }
+    confettiContainer.style.display = 'block';
+    setTimeout(() => {
+      confettiContainer.style.display = 'none';
+    }, 5000);
+  }
+
+  function startBlinking() {
+    let isYellow = true;
+    const blinkInterval = setInterval(() => {
+      document.body.style.backgroundColor = isYellow ? "#0000ff" : "#ffff00";
+      isYellow = !isYellow;
+    }, 500);
+    setTimeout(() => {
+      clearInterval(blinkInterval);
+      document.body.style.backgroundColor = "#ffffff"; // Reset background color after blinking
+    }, 5000);
+  }
+
+  // Minimal CSS for confetti animation
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes confetti-fall {
+      to {
+        transform: translate3d(0, 100vh, 0);
+        opacity: 1;
+      }
+    }
+  `;
+  document.head.appendChild(style);
 </script>
 
 </body>
