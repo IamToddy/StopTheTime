@@ -124,6 +124,22 @@
       opacity: 1;
     }
   }
+  .happy-face {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    border: 5px solid green;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 200px;
+    font-size: 100px;
+    color: green;
+  }
   .sad-face {
     display: none;
     position: fixed;
@@ -140,8 +156,53 @@
     font-size: 50px;
     color: red;
   }
-  .sad-face p {
+  .sad-face p, .happy-face p {
     margin: 0;
+  }
+  .fish-game, .trophy {
+    display: none;
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: #87ceeb;
+    border: 2px solid #000;
+  }
+  .fish {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: url('https://i.imgur.com/Jbi9ijY.png') no-repeat center center;
+    background-size: contain;
+    cursor: pointer;
+  }
+  .pellet {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .green-pellet {
+    background: green;
+  }
+  .red-pellet {
+    background: red;
+  }
+  .trophy-grow {
+    width: 100px;
+    height: 100px;
+    background: url('https://i.imgur.com/WX4qRCN.png') no-repeat center center;
+    background-size: contain;
+    animation: grow 5s infinite;
+  }
+  @keyframes grow {
+    0%, 100% {
+      width: 100px;
+      height: 100px;
+    }
+    50% {
+      width: 200px;
+      height: 200px;
+    }
   }
 </style>
 </head>
@@ -187,20 +248,34 @@
 </div>
 
 <div class="confetti" id="confetti"></div>
-
+<div class="happy-face" id="happyFace"><p>😊</p></div>
 <div class="sad-face" id="sadFace"><p>☹</p><p>Prøv igjen</p></div>
+<div class="fish-game" id="fishGame">
+  <div class="fish" id="fish"></div>
+</div>
+<div class="trophy" id="trophy">
+  <div class="trophy-grow"></div>
+</div>
 
 <script>
   let startTime;
   let attempts = 0;
   const maxAttempts = 3;
+  const requiredTimes = [5.00, 10.00, 15.50];
+  let timesHit = 0;
   const confettiContainer = document.getElementById('confetti');
   const messageElement = document.getElementById('message');
+  const happyFaceElement = document.getElementById('happyFace');
   const sadFaceElement = document.getElementById('sadFace');
   const digitalTimerElement = document.getElementById('digitalTimer');
+  const fishGameElement = document.getElementById('fishGame');
+  const fishElement = document.getElementById('fish');
+  const trophyElement = document.getElementById('trophy');
   let timerInterval;
   let colorIndex = 0;
   const colors = ['#ff6347', '#4682b4', '#32cd32', '#ffd700', '#8a2be2'];
+  let pelletsCollected = 0;
+  const requiredPellets = 10;
 
   function updateClock() {
     const now = new Date().getTime();
@@ -222,6 +297,7 @@
   function startTimer() {
     startTime = new Date().getTime();
     attempts = 0;
+    timesHit = 0;
     messageElement.textContent = '';
     startClock();
   }
@@ -233,17 +309,23 @@
     messageElement.textContent = '';
     startClock();
   }
-function recordTime() {
+
+  function recordTime() {
     attempts++;
     const now = new Date().getTime();
     const finalTime = ((now - startTime) / 1000).toFixed(2);
     messageElement.textContent = `Du trykket på ${finalTime} sekunder.`;
-    if (finalTime == 5.00 || finalTime == 10.00 || finalTime == 15.50) {
-      messageElement.textContent = 'Gratulerer, du traff nøyaktig!';
-      showConfettiAndBlinking();
-      updateLeaderboard(finalTime);
-      resetClock();
-    } else if (attempts === maxAttempts) {
+
+    if (requiredTimes.includes(parseFloat(finalTime))) {
+      timesHit++;
+      if (timesHit === requiredTimes.length) {
+        showConfettiAndHappyFace();
+        startFishGame();
+        return;
+      }
+    }
+
+    if (attempts === maxAttempts) {
       showSadFace();
     }
   }
@@ -256,16 +338,12 @@ function recordTime() {
     }, 3000);
   }
 
-  function showConfettiAndBlinking() {
+  function showConfettiAndHappyFace() {
     showConfetti();
-    let blinkInterval = setInterval(() => {
-      document.body.style.backgroundColor = colors[colorIndex];
-      colorIndex = (colorIndex + 1) % colors.length;
-    }, 300);
+    happyFaceElement.style.display = 'block';
     setTimeout(() => {
-      clearInterval(blinkInterval);
-      document.body.style.backgroundColor = "#f8f9fa";
-    }, 10000);
+      happyFaceElement.style.display = 'none';
+    }, 3000);
   }
 
   function showConfetti() {
@@ -292,6 +370,58 @@ function recordTime() {
       currentScores.pop();
     }
     leaderboard.value = currentScores.join('\n');
+  }
+
+  function startFishGame() {
+    document.querySelector('.main').style.display = 'none';
+    document.querySelector('.leaderboard').style.display = 'none';
+    fishGameElement.style.display = 'block';
+    spawnPellets();
+    moveFish();
+  }
+
+  function moveFish() {
+    document.addEventListener('mousemove', (e) => {
+      fishElement.style.left = e.clientX - fishElement.offsetWidth / 2 + 'px';
+      fishElement.style.top = e.clientY - fishElement.offsetHeight / 2 + 'px';
+    });
+  }
+
+  function spawnPellets() {
+    const pelletInterval = setInterval(() => {
+      if (pelletsCollected >= requiredPellets) {
+        clearInterval(pelletInterval);
+        endFishGame();
+        return;
+      }
+
+      const pellet = document.createElement('div');
+      pellet.classList.add('pellet');
+      pellet.classList.add(Math.random() > 0.5 ? 'green-pellet' : 'red-pellet');
+      pellet.style.left = Math.random() * 100 + 'vw';
+      pellet.style.top = Math.random() * 100 + 'vh';
+      fishGameElement.appendChild(pellet);
+
+      pellet.addEventListener('mouseover', () => {
+        if (pellet.classList.contains('green-pellet')) {
+          pelletsCollected++;
+          pellet.remove();
+        } else {
+          showSadFace();
+          resetClock();
+          fishGameElement.style.display = 'none';
+          document.querySelector('.main').style.display = 'flex';
+          document.querySelector('.leaderboard').style.display = 'block';
+          clearInterval(pelletInterval);
+        }
+      });
+    }, 1000);
+  }
+
+  function endFishGame() {
+    fishGameElement.style.display = 'none';
+    trophyElement.style.display = 'block';
+    showConfettiAndHappyFace();
   }
 
   startClock();
