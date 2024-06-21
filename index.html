@@ -20,14 +20,14 @@
   }
   .confetti {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: 1000;
     pointer-events: none;
+    z-index: 1000;
   }
   .confetti div {
     position: absolute;
@@ -58,12 +58,15 @@
 <script>
   let startTime;
   let timerInterval;
+  let timerRunning = false;
   const confettiContainer = document.getElementById('confetti');
 
   function startTimer() {
+    if (timerRunning) return;
     startTime = new Date().getTime();
     timerInterval = setInterval(updateTimer, 10);
     document.getElementById('message').textContent = '';
+    timerRunning = true;
   }
 
   function updateTimer() {
@@ -73,6 +76,7 @@
   }
 
   function stopTimer() {
+    if (!timerRunning) return;
     clearInterval(timerInterval);
     const finalTime = parseFloat(document.getElementById('timer').textContent);
     if (finalTime === 10.00) {
@@ -82,16 +86,23 @@
     } else {
       document.getElementById('message').textContent = `Du stoppet på ${finalTime.toFixed(2)} sekunder. Prøv igjen!`;
     }
+    timerRunning = false;
   }
 
   function showConfetti() {
+    confettiContainer.innerHTML = ''; // Clear any existing confetti
     for (let i = 0; i < 100; i++) {
       const confetto = document.createElement('div');
       confetto.style.left = Math.random() * 100 + 'vw';
+      confetto.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
       confetto.style.animationDelay = Math.random() * 2 + 's';
       confettiContainer.appendChild(confetto);
     }
     confettiContainer.style.display = 'block';
+    setTimeout(() => {
+      confettiContainer.style.display = 'none';
+      document.body.style.backgroundColor = '#f0f0f0';
+    }, 5000);
   }
 </script>
 
