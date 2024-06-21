@@ -262,7 +262,6 @@
   let attempts = 0;
   const maxAttempts = 3;
   const requiredTimes = [5.00, 10.00, 15.50];
-  let timesHit = 0;
   const confettiContainer = document.getElementById('confetti');
   const messageElement = document.getElementById('message');
   const happyFaceElement = document.getElementById('happyFace');
@@ -297,7 +296,6 @@
   function startTimer() {
     startTime = new Date().getTime();
     attempts = 0;
-    timesHit = 0;
     messageElement.textContent = '';
     startClock();
   }
@@ -317,12 +315,9 @@
     messageElement.textContent = `Du trykket på ${finalTime} sekunder.`;
 
     if (requiredTimes.includes(parseFloat(finalTime))) {
-      timesHit++;
-      if (timesHit === requiredTimes.length) {
-        showConfettiAndHappyFace();
-        startFishGame();
-        return;
-      }
+      showConfettiAndHappyFace();
+      startFishGame();
+      return;
     }
 
     if (attempts === maxAttempts) {
