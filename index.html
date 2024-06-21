@@ -224,13 +224,13 @@
   <ul style="text-align: left; padding: 0 10px;">
     <li>Trykk på "Start"-knappen for å starte klokken.</li>
     <li>Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder.</li>
-    <li>Treffer du riktig tid?</li>
+    <li>Treffer du riktig tid? Konfetti og fargerike lys vil regne over deg!</li>
     <li>Klarer du det? Du vil gå videre til FISKESPILLET!</li>
     <li>I fiskespillet må fisken din spise 10 grønne pellets for å vinne.</li>
     <li>Men pass deg for de røde pelletsene, de er skumle!</li>
     <li>Du kan styre fisken ved å dra den med musen eller ved å tilte telefonen.</li>
     <li>Når du har samlet 10 grønne pellets, går du videre til MATCH SPILLET!</li>
-    <li>I match spillet må du finne de to matchende ikonene innen 30 sekunder.</li>
+    <li>I match spillet må du finne de to matchende ikonene innen 30 sekunder for å vinne hele spillet!</li>
   </ul>
   <button class="button" onclick="closePopup()">Start Spillet</button>
 </div>
@@ -305,7 +305,6 @@
   function updateClock() {
     const now = new Date().getTime();
     const elapsedTime = (now - startTime) / 1000;
-    const seconds = elapsedTime % 60;
     digitalTimerElement.textContent = elapsedTime.toFixed(2);
   }
 
@@ -442,8 +441,8 @@
         const tiltY = event.beta; // Front to back
 
         if (tiltX && tiltY) {
-          fishElement.style.left = (window.innerWidth / 2 + tiltX * 10) + 'px';
-          fishElement.style.top = (window.innerHeight / 2 + tiltY * 10) + 'px';
+          fishElement.style.left = (window.innerWidth / 2 + tiltX * 5) + 'px';
+          fishElement.style.top = (window.innerHeight / 2 + tiltY * 5) + 'px';
         }
       });
     } else {
@@ -453,15 +452,10 @@
 
   function spawnPellets() {
     const pelletInterval = setInterval(() => {
-      if (pelletsCollected >= requiredPellets) {
-        clearInterval(pelletInterval);
-        showMatchGamePopup();
-        return;
-      }
-
+      const isGreenPellet = Math.random() > 0.33; // 50% more green pellets
       const pellet = document.createElement('div');
       pellet.classList.add('pellet');
-      pellet.classList.add(Math.random() > 0.5 ? 'green-pellet' : 'red-pellet');
+      pellet.classList.add(isGreenPellet ? 'green-pellet' : 'red-pellet');
       pellet.style.left = Math.random() * 100 + 'vw';
       pellet.style.top = Math.random() * 100 + 'vh';
       fishGameElement.appendChild(pellet);
@@ -470,6 +464,10 @@
         if (pellet.classList.contains('green-pellet')) {
           pelletsCollected++;
           pellet.remove();
+          if (pelletsCollected >= requiredPellets) {
+            clearInterval(pelletInterval);
+            showMatchGamePopup();
+          }
         } else {
           showSadFace();
           resetClock();
