@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stop the Timer Game</title>
+<title>Stopp Tiden Spill</title>
 <style>
   body {
     display: flex;
@@ -73,10 +73,10 @@
 <body>
 
 <div class="main">
-  <h1>Stop the Timer at Exactly 10 Seconds!</h1>
+  <h1>Stopp Tiden på Nøyaktig 10.00 Sekunder!</h1>
   <div class="timer" id="timer">0.00</div>
   <button class="button" onclick="startTimer()">Start</button>
-  <button class="button" onclick="stopTimer()">Stop</button>
+  <button class="button" onclick="stopTimer()">Stopp</button>
   <div class="message" id="message"></div>
 </div>
 
@@ -116,7 +116,7 @@
   function stopTimer() {
     clearInterval(timerInterval);
     const finalTime = parseFloat(document.getElementById('timer').textContent);
-    if (finalTime >= 10.00 && finalTime < 10.10) { // To consider it as a close enough match to 10 seconds
+    if (finalTime === 10.00) {
       document.body.style.backgroundColor = "yellow";
       document.getElementById('message').textContent = 'Gratulerer, du er dagens 10er!';
       showConfetti();
@@ -139,7 +139,7 @@
   function updateLeaderboard(finalTime) {
     const leaderboard = document.getElementById('leaderboard');
     let currentScores = leaderboard.value.trim().split('\n');
-    const newScore = `New Player - ${finalTime.toFixed(2)}`;
+    const newScore = `Ny Spiller - ${finalTime.toFixed(2)}`;
     currentScores.push(newScore);
     currentScores.sort((a, b) => parseFloat(a.split('-')[1]) - parseFloat(b.split('-')[1]));
     if (currentScores.length > 8) {
