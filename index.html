@@ -22,51 +22,27 @@
     align-items: center;
     justify-content: center;
   }
-  .clock {
-    width: 200px;
-    height: 200px;
-    border: 10px solid #ff6347;
-    border-radius: 50%;
+  .clock-container {
     position: relative;
-    background: white;
+    width: 100%;
+    height: 60vh;
+    background: linear-gradient(135deg, #ff6347, #4682b4, #32cd32, #ffd700, #8a2be2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .hand {
-    width: 50%;
-    height: 6px;
-    background: #4682b4;
     position: absolute;
-    top: 50%;
+    width: 50%;
+    height: 10px;
+    background: black;
     transform-origin: 100%;
-    transform: rotate(90deg);
+    transition: transform 0.2s ease;
   }
   .second-hand {
-    height: 3px;
-    background: #32cd32;
+    height: 5px;
+    background: red;
   }
-  .center {
-    width: 10px;
-    height: 10px;
-    background: #ff6347;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-  }
-  .number {
-    position: absolute;
-    font-size: 18px;
-    font-weight: bold;
-    color: #4682b4;
-  }
-  .number:nth-child(1)  { top: 10px; left: 50%; transform: translateX(-50%); }
-  .number:nth-child(2)  { top: 25%; left: 90%; transform: translate(-50%, -50%); }
-  .number:nth-child(3)  { top: 50%; left: 90%; transform: translate(-50%, -50%); }
-  .number:nth-child(4)  { top: 75%; left: 90%; transform: translate(-50%, -50%); }
-  .number:nth-child(5)  { top: 90%; left: 50%; transform: translateX(-50%); }
-  .number:nth-child(6)  { top: 75%; left: 10%; transform: translate(-50%, -50%); }
-  .number:nth-child(7)  { top: 50%; left: 10%; transform: translate(-50%, -50%); }
-  .number:nth-child(8)  { top: 25%; left: 10%; transform: translate(-50%, -50%); }
   .digital-timer {
     font-size: 48px;
     margin-top: 20px;
@@ -209,21 +185,8 @@
 <div class="main">
   <h1>Stopp Tiden Spill</h1>
   <p>Velkommen til det mest sprø spillet du noen gang har spilt! Trykk på "Start"-knappen for å starte klokken. Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Treffer du? Konfetti og fargerike lys vil regne over deg! Klarer du det? Du vil gå videre til FISKESPILLET, hvor fisken din må spise 10 grønne pellets for å vinne. Men pass deg for de røde pelletsene, de er skumle!</p>
-  <div class="clock">
-    <div class="number">12</div>
-    <div class="number">1</div>
-    <div class="number">2</div>
-    <div class="number">3</div>
-    <div class="number">4</div>
-    <div class="number">5</div>
-    <div class="number">6</div>
-    <div class="number">7</div>
-    <div class="number">8</div>
-    <div class="number">9</div>
-    <div class="number">10</div>
-    <div class="number">11</div>
+  <div class="clock-container">
     <div class="hand second-hand" id="secondHand"></div>
-    <div class="center"></div>
   </div>
   <div class="digital-timer" id="digitalTimer">0.00</div>
   <button class="button" id="startButton" onclick="startTimer()">Start</button>
@@ -269,7 +232,8 @@
   const fishElement = document.getElementById('fish');
   const trophyElement = document.getElementById('trophy');
   let timerInterval;
-  let colorIndex = 0;
+  let lastMouseX = 0;
+  let lastMouseY = 0;
   const colors = ['#ff6347', '#4682b4', '#32cd32', '#ffd700', '#8a2be2'];
   let pelletsCollected = 0;
   const requiredPellets = 10;
@@ -384,6 +348,10 @@
       function moveAt(pageX, pageY) {
         fishElement.style.left = pageX - fishElement.offsetWidth / 2 + 'px';
         fishElement.style.top = pageY - fishElement.offsetHeight / 2 + 'px';
+        const angle = Math.atan2(pageY - lastMouseY, pageX - lastMouseX) * 180 / Math.PI;
+        fishElement.style.transform = `rotate(${angle}deg)`;
+        lastMouseX = pageX;
+        lastMouseY = pageY;
       }
 
       function onMouseMove(event) {
