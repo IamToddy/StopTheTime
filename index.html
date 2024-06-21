@@ -13,13 +13,10 @@
 <button onclick="stopTimer()">Stop</button>
 <div id="message"></div>
 
-<div id="confetti"></div>
-
 <script>
   let startTime;
   let timerInterval;
   let timerRunning = false;
-  const confettiContainer = document.getElementById('confetti');
 
   function startTimer() {
     if (timerRunning) return;
@@ -42,45 +39,11 @@
     if (finalTime === 10.00) {
       document.body.style.backgroundColor = "yellow";
       document.getElementById('message').textContent = 'Gratulerer, du er dagens 10er!';
-      showConfetti();
     } else {
       document.getElementById('message').textContent = `Du stoppet på ${finalTime.toFixed(2)} sekunder. Prøv igjen!`;
     }
     timerRunning = false;
   }
-
-  function showConfetti() {
-    confettiContainer.innerHTML = ''; // Clear any existing confetti
-    for (let i = 0; i < 100; i++) {
-      const confetto = document.createElement('div');
-      confetto.style.position = 'absolute';
-      confetto.style.width = '10px';
-      confetto.style.height = '10px';
-      confetto.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-      confetto.style.left = Math.random() * 100 + 'vw';
-      confetto.style.top = '0';
-      confetto.style.opacity = '0';
-      confetto.style.animation = 'confetti-fall 2s linear infinite';
-      confettiContainer.appendChild(confetto);
-    }
-    confettiContainer.style.display = 'block';
-    setTimeout(() => {
-      confettiContainer.style.display = 'none';
-      document.body.style.backgroundColor = '#ffffff';
-    }, 5000);
-  }
-
-  // Minimal CSS for confetti animation
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes confetti-fall {
-      to {
-        transform: translate3d(0, 100vh, 0);
-        opacity: 1;
-      }
-    }
-  `;
-  document.head.appendChild(style);
 </script>
 
 </body>
