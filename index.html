@@ -7,8 +7,8 @@
 </head>
 <body>
 
-<h1>Stop the Timer at Exactly 10 Seconds!</h1>
-<div id="timer" style="font-size: 2em; margin: 20px;">0.00</div>
+<h1>Stop the Timer at Exactly 10.000 Seconds!</h1>
+<div id="timer" style="font-size: 2em; margin: 20px;">0.000</div>
 <button id="startButton" style="font-size: 1em; padding: 10px 20px;" onclick="startTimer()">Start</button>
 <button id="stopButton" style="font-size: 1em; padding: 10px 20px;" onclick="stopTimer()">Stop</button>
 <div id="message" style="font-size: 1.5em; margin-top: 20px;"></div>
@@ -33,19 +33,19 @@
   function updateTimer() {
     const currentTime = new Date().getTime();
     const elapsedTime = (currentTime - startTime) / 500;  // Gjør at tiden går dobbelt så fort
-    document.getElementById('timer').textContent = elapsedTime.toFixed(2);
+    document.getElementById('timer').textContent = elapsedTime.toFixed(3);
   }
 
   function stopTimer() {
     if (!timerRunning) return;
     clearInterval(timerInterval);
     const finalTime = parseFloat(document.getElementById('timer').textContent);
-    if (finalTime === 10.00) {
+    if (finalTime === 10.000) {
       document.getElementById('message').textContent = 'Gratulerer, du er dagens 10er!';
       showConfetti();
       startBlinking();
     } else {
-      document.getElementById('message').textContent = `Du stoppet på ${finalTime.toFixed(2)} sekunder. Prøv igjen!`;
+      document.getElementById('message').textContent = `Du stoppet på ${finalTime.toFixed(3)} sekunder. Prøv igjen!`;
     }
     timerRunning = false;
   }
