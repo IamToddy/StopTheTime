@@ -197,8 +197,8 @@
 
 <div class="main">
   <h1>Stopp Tiden Spill</h1>
-  <p>Velkommen til det mest sprø spillet du noen gang har spilt! Trykk på "Start"-knappen for å starte klokken. Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Treffer du? Konfetti og fargerike lys vil regne over deg! Klarer du det? Du vil gå videre til FISKESPILLET, hvor fisken din må spise 10 grønne pellets for å vinne. Men pass deg for de røde pelletsene, de er skumle! Hvis du overlever, må du finne to like i havet!</p>
-  <div id="pulsingFish" class="pulsing-fish">🐟</div>
+  <p>Velkommen til det mest sprø spillet du noen gang har spilt! Trykk på "Start"-knappen for å starte klokken. Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Treffer du? Konfetti og fargerike lys vil regne over deg! Klarer du det? Du vil gå videre til FISKESPILLET, hvor fisken din må spise 10 grønne pellets for å vinne. Men pass deg for de røde pelletsene, de er skumle!</p>
+  <div id="pulsingFish">🐟</div>
   <div class="digital-timer" id="digitalTimer">0.00</div>
   <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
     <button class="button button-left" id="startButton" onclick="startTimer()">Start</button>
@@ -425,7 +425,7 @@
   }
 
   function spawnIcons() {
-    const icons = ['🐟', '🐠', '🐡', '🐬', '🐳', '🐋', '🐙', '🦀', '🦐', '🦑', '🐚', '🐌', '🐞', '🦋', '🐌', '🐞', '🦋', '🌸', '🌼', '🌻', '🐦', '🐧', '🐨', '🐒', '🐵', '🐝', '🐺', '🦁', '🦊', '🐯', '🐴', '🦄', '🐲', '🐍', '🐢', '🐠', '🐡', '🦈', '🐅', '🐆', '🦓', '🐫', '🐪', '🦍', '🐘', '🐊', '🐅', '🐆', '🦓', '🐫', '🐪', '🦍', '🐘', '🐊', '🐜', '🦋', '🐝', '🐞', '🦗', '🦂', '🕷️', '🦄', '🐲', '🐸', '🦇', '🦉', '🐓', '🦃', '🦤', '🦦', '🦥', '🦩', '🦚', '🦩', '🦦', '🦥', '🦧', '🐧', '🐦', '🦅', '🦉', '🦢', '🦩', '🦚', '🦩', '🦦', '🦥', '🦧', '🐧', '🐦', '🦅', '🦉', '🦢', '🦩', '🦚', '🦩', '🦦', '🦥', '🦧', '🐧', '🐦', '🦅', '🦉', '🦢', '🦩', '🦚', '🦩', '🦦', '🦥', '🦧', '🐧', '🐦', '🦅', '🦉', '🦢', '🦩', '🦚', '🦩', '🦦', '🦥', '🦧'];
+    const icons = ['🐟', '🐠', '🐡', '🐬', '🐳', '🐋', '🐙', '🦀', '🦐', '🦑', '🐚', '🐌', '🐞', '🦋', '🌸', '🌼', '🌻', '🐦', '🐧', '🐨', '🐒', '🐵', '🐝', '🐺', '🦁', '🦊', '🐯', '🐴', '🦄', '🐲', '🐍', '🐢', '🦈', '🐅', '🐆', '🦓', '🐫', '🦍', '🐘', '🐊', '🐜', '🦋', '🐝', '🐞', '🦗', '🦂', '🕷️', '🦄', '🐸', '🦇', '🦉', '🐓', '🦃', '🦤', '🦦', '🦥', '🦩', '🦚'];
     const positions = new Set();
     while (positions.size < 300) {
       const x = Math.random() * (window.innerWidth - 50);
@@ -495,14 +495,13 @@
     finalWinMessage.style.position = 'fixed';
     finalWinMessage.style.top = '50%';
     finalWinMessage.style.left = '50%';
-    finalWinMessage.style.transform = 'translate(-50%, -50%)';
-    finalWinMessage.style.fontSize = '48px';
+    finalWinMessage.style.transform = 'translate(-50%, -50%)'; finalWinMessage.style.fontSize = '48px';
     finalWinMessage.style.color = 'green';
     finalWinMessage.style.background = 'white';
     finalWinMessage.style.padding = '20px';
     finalWinMessage.style.border = '5px solid green';
     finalWinMessage.style.borderRadius = '10px';
-    finalWinMessage.textContent = '🎉 Gratulerer, du vant hele spillet! 🎉';
+    finalWinMessage.textContent = '🎉 Woohoo! Gratulerer, du vant hele spillet! 🎉';
     document.body.appendChild(finalWinMessage);
 
     setTimeout(() => {
