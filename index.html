@@ -22,41 +22,17 @@
     align-items: center;
     justify-content: center;
   }
-  .clock-container {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    border: 10px solid #4682b4;
-    border-radius: 50%;
-    background: #f0e68c;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .pulsing-fish {
+    font-size: 100px;
+    animation: pulse 1s infinite;
   }
-  .hand {
-    position: absolute;
-    width: 50%;
-    height: 6px;
-    background: black;
-    transform-origin: 100%;
-    transition: transform 0.2s ease;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(90deg);
-  }
-  .second-hand {
-    height: 3px;
-    background: red;
-  }
-  .center {
-    width: 10px;
-    height: 10px;
-    background: black;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
   }
   .digital-timer {
     font-size: 48px;
@@ -200,6 +176,21 @@
       height: 200px;
     }
   }
+  .match-game {
+    display: none;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: white;
+    overflow: hidden;
+  }
+  .match-game .icon {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    font-size: 50px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -207,10 +198,7 @@
 <div class="main">
   <h1>Stopp Tiden Spill</h1>
   <p>Velkommen til det mest sprø spillet du noen gang har spilt! Trykk på "Start"-knappen for å starte klokken. Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Treffer du? Konfetti og fargerike lys vil regne over deg! Klarer du det? Du vil gå videre til FISKESPILLET, hvor fisken din må spise 10 grønne pellets for å vinne. Men pass deg for de røde pelletsene, de er skumle!</p>
-  <div class="clock-container">
-    <div class="hand second-hand" id="secondHand"></div>
-    <div class="center"></div>
-  </div>
+  <div class="pulsing-fish">🐟</div>
   <div class="digital-timer" id="digitalTimer">0.00</div>
   <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
     <button class="button button-left" id="startButton" onclick="startTimer()">Start</button>
@@ -242,6 +230,7 @@
 <div class="trophy" id="trophy">
   <div class="trophy-grow">🏆</div>
 </div>
+<div class="match-game" id="matchGame"></div>
 
 <script>
   let startTime;
@@ -256,6 +245,7 @@
   const fishGameElement = document.getElementById('fishGame');
   const fishElement = document.getElementById('fish');
   const trophyElement = document.getElementById('trophy');
+  const matchGameElement = document.getElementById('matchGame');
   let timerInterval;
   let lastMouseX = 0;
   let lastMouseY = 0;
@@ -267,8 +257,6 @@
     const now = new Date().getTime();
     const elapsedTime = (now - startTime) / 1000;
     const seconds = elapsedTime % 60;
-    const secondsDeg = ((seconds / 60) * 360) + 90;
-    document.getElementById('secondHand').style.transform = `rotate(${secondsDeg}deg) translateX(-50%)`;
     digitalTimerElement.textContent = elapsedTime.toFixed(2);
   }
 
@@ -400,7 +388,7 @@
     const pelletInterval = setInterval(() => {
       if (pelletsCollected >= requiredPellets) {
         clearInterval(pelletInterval);
-        endFishGame();
+        startMatchGame();
         return;
       }
 
@@ -427,10 +415,108 @@
     }, 1000);
   }
 
-  function endFishGame() {
+  function startMatchGame() {
     fishGameElement.style.display = 'none';
-    trophyElement.style.display = 'block';
-    showConfettiAndHappyFace();
+    matchGameElement.style.display = 'block';
+    spawnIcons();
+    startMatchTimer();
+  }
+
+  function spawnIcons() {
+    const icons = ['🐟', '🐠', '🐡', '🐬', '🐳', '🐋', '🐙', '🦀', '🦐', '🦑', '🐚', '🐌', '🐞', '🦋', '🐌', '🐞', '🦋', '🌸', '🌼', '🌻'];
+    const positions = new Set();
+    while (positions.size < 300) {
+      const x = Math.random() * (window.innerWidth - 50);
+      const y = Math.random() * (window.innerHeight - 50);
+      positions.add(`${x},${y}`);
+    }
+
+    const positionsArray = Array.from(positions);
+    const matchIcons = [];
+    for (let i = 0; i < 2; i++) {
+      const matchIcon = icons[Math.floor(Math.random() * icons.length)];
+      matchIcons.push(matchIcon);
+    }
+    
+    for (let i = 0; i < 300; i++) {
+      const icon = document.createElement('div');
+      icon.classList.add('icon');
+      icon.style.left = positionsArray[i].split(',')[0] + 'px';
+      icon.style.top = positionsArray[i].split(',')[1] + 'px';
+      if (i < 2) {
+        icon.textContent = matchIcons[i];
+        icon.dataset.match = "true";
+      } else {
+        icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+      }
+      matchGameElement.appendChild(icon);
+      icon.addEventListener('click', checkMatch);
+    }
+  }
+
+  function checkMatch(event) {
+    const clickedIcons = document.querySelectorAll('.icon[data-selected="true"]');
+    event.target.dataset.selected = "true";
+    if (clickedIcons.length === 1) {
+      if (clickedIcons[0].textContent === event.target.textContent) {
+        if (clickedIcons[0].dataset.match && event.target.dataset.match) {
+          clickedIcons.forEach(icon => icon.remove());
+          event.target.remove();
+          matchGameElement.style.display = 'none';
+          showFinalWin();
+        }
+      } else {
+        clickedIcons.forEach(icon => delete icon.dataset.selected);
+        delete event.target.dataset.selected;
+      }
+    }
+  }
+
+  function startMatchTimer() {
+    let timeLeft = 30;
+    const timer = setInterval(() => {
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        showSadFace();
+        matchGameElement.style.display = 'none';
+        document.querySelector('.main').style.display = 'flex';
+        document.querySelector('.leaderboard').style.display = 'block';
+      } else {
+        timeLeft--;
+      }
+    }, 1000);
+  }
+
+  function showFinalWin() {
+    showConfetti();
+    const finalWinMessage = document.createElement('div');
+    finalWinMessage.style.position = 'fixed';
+    finalWinMessage.style.top = '50%';
+    finalWinMessage.style.left = '50%';
+    finalWinMessage.style.transform = 'translate(-50%, -50%)';
+    finalWinMessage.style.fontSize = '48px';
+    finalWinMessage.style.color = 'green';
+    finalWinMessage.textContent = 'Gratulerer, du vant hele spillet!';
+    document.body.appendChild(finalWinMessage);
+
+    setTimeout(() => {
+      finalWinMessage.remove();
+      showExplodingIcons();
+    }, 5000);
+  }
+
+  function showExplodingIcons() {
+    const icons = document.querySelectorAll('.icon[data-match="true"]');
+    icons.forEach(icon => {
+      icon.style.transition = 'transform 1s, opacity 1s';
+      icon.style.transform = 'scale(5)';
+      icon.style.opacity = '0';
+      setTimeout(() => icon.remove(), 1000);
+    });
+
+    setTimeout(() => {
+      showConfetti(100);
+    }, 1000);
   }
 
   startClock();
