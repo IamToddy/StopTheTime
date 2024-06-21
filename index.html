@@ -56,6 +56,12 @@
       opacity: 1;
     }
   }
+  .button {
+    padding: 20px 40px;
+    font-size: 24px;
+    margin: 10px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -63,8 +69,8 @@
 <div class="main">
   <h1>Stop the Timer at Exactly 10 Seconds!</h1>
   <div class="timer" id="timer">0.00</div>
-  <button onclick="startTimer()">Start</button>
-  <button onclick="stopTimer()">Stop</button>
+  <button class="button" onclick="startTimer()">Start</button>
+  <button class="button" onclick="stopTimer()">Stop</button>
   <div class="message" id="message"></div>
 </div>
 
