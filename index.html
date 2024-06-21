@@ -99,13 +99,29 @@
       opacity: 1;
     }
   }
+  .sad-face {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    border: 5px solid red;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 200px;
+    font-size: 100px;
+    color: red;
+  }
 </style>
 </head>
 <body>
 
 <div class="main">
   <h1>Stopp Tiden Spill</h1>
-  <p>Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. De beste tidene vil bli lagret på lederbordet.</p>
+  <p>Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Hvis du treffer riktig tid, vil du se konfetti og skjermen vil blinke i forskjellige farger. De beste tidene vil bli lagret på lederbordet. Du har tre forsøk per gang.</p>
   <div class="clock">
     <div class="hand second-hand" id="secondHand"></div>
     <div class="center"></div>
@@ -130,10 +146,15 @@
 
 <div class="confetti" id="confetti"></div>
 
+<div class="sad-face" id="sadFace">☹</div>
+
 <script>
   let startTime = new Date().getTime();
+  let attempts = 0;
+  const maxAttempts = 3;
   const confettiContainer = document.getElementById('confetti');
   const messageElement = document.getElementById('message');
+  const sadFaceElement = document.getElementById('sadFace');
   let colorIndex = 0;
   const colors = ['#ff6347', '#4682b4', '#32cd32', '#ffd700', '#8a2be2'];
 
@@ -150,6 +171,12 @@
   }
 
   function recordTime() {
+    attempts++;
+    if (attempts > maxAttempts) {
+      showSadFace();
+      return;
+    }
+
     const now = new Date().getTime();
     const finalTime = ((now - startTime) / 1000).toFixed(2);
     messageElement.textContent = `Du trykket på ${finalTime} sekunder.`;
@@ -157,7 +184,18 @@
       messageElement.textContent = 'Gratulerer, du traff nøyaktig!';
       showConfettiAndBlinking();
       updateLeaderboard(finalTime);
+      attempts = 0;
+    } else if (attempts === maxAttempts) {
+      showSadFace();
     }
+  }
+
+  function showSadFace() {
+    sadFaceElement.style.display = 'block';
+    setTimeout(() => {
+      sadFaceElement.style.display = 'none';
+      attempts = 0;
+    }, 3000);
   }
 
   function showConfettiAndBlinking() {
