@@ -4,95 +4,134 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stop the Timer Game</title>
+<style>
+  body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+  }
+  .main {
+    text-align: center;
+    flex: 1;
+  }
+  .leaderboard {
+    width: 300px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    margin: 10px;
+  }
+  .timer {
+    font-size: 48px;
+    margin: 20px;
+  }
+  .message {
+    font-size: 24px;
+    margin-top: 20px;
+  }
+  .confetti {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1000;
+    pointer-events: none;
+  }
+  .confetti div {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: red;
+    opacity: 0;
+    animation: confetti-fall 2s linear infinite;
+  }
+  @keyframes confetti-fall {
+    to {
+      transform: translate3d(0, 100vh, 0);
+      opacity: 1;
+    }
+  }
+</style>
 </head>
 <body>
 
-<h1>Stop the Timer at Exactly 10.000 Seconds!</h1>
-<div id="timer" style="font-size: 2em; margin: 20px;">0.000</div>
-<button id="startButton" style="font-size: 1em; padding: 10px 20px;" onclick="startTimer()">Start</button>
-<button id="stopButton" style="font-size: 1em; padding: 10px 20px;" onclick="stopTimer()">Stop</button>
-<div id="message" style="font-size: 1.5em; margin-top: 20px;"></div>
+<div class="main">
+  <h1>Stop the Timer at Exactly 10 Seconds!</h1>
+  <div class="timer" id="timer">0.00</div>
+  <button onclick="startTimer()">Start</button>
+  <button onclick="stopTimer()">Stop</button>
+  <div class="message" id="message"></div>
+</div>
 
-<div id="confetti"></div>
+<div class="leaderboard">
+  <h2>Leaderboard</h2>
+  <textarea id="leaderboard" rows="10" cols="30">
+1. John Doe - 10.00
+2. Jane Smith - 10.01
+3. Bob Johnson - 10.02
+4. Alice Brown - 10.03
+5. Charlie Davis - 10.04
+  </textarea>
+</div>
+
+<div class="confetti" id="confetti"></div>
 
 <script>
   let startTime;
   let timerInterval;
-  let timerRunning = false;
   const confettiContainer = document.getElementById('confetti');
 
   function startTimer() {
-    if (timerRunning) return;
     startTime = new Date().getTime();
     timerInterval = setInterval(updateTimer, 10);
     document.getElementById('message').textContent = '';
-    document.body.style.backgroundColor = "#ffffff"; // Reset background color
-    timerRunning = true;
   }
 
   function updateTimer() {
     const currentTime = new Date().getTime();
-    const elapsedTime = (currentTime - startTime) / 500;  // Gjør at tiden går dobbelt så fort
-    document.getElementById('timer').textContent = elapsedTime.toFixed(3);
+    const elapsedTime = (currentTime - startTime) / 1000;
+    document.getElementById('timer').textContent = elapsedTime.toFixed(2);
   }
 
   function stopTimer() {
-    if (!timerRunning) return;
     clearInterval(timerInterval);
     const finalTime = parseFloat(document.getElementById('timer').textContent);
-    if (finalTime === 10.000) {
+    if (finalTime === 10.00) {
+      document.body.style.backgroundColor = "yellow";
       document.getElementById('message').textContent = 'Gratulerer, du er dagens 10er!';
       showConfetti();
-      startBlinking();
+      updateLeaderboard(finalTime);
     } else {
-      document.getElementById('message').textContent = `Du stoppet på ${finalTime.toFixed(3)} sekunder. Prøv igjen!`;
+      document.getElementById('message').textContent = `Du stoppet på ${finalTime.toFixed(2)} sekunder. Prøv igjen!`;
     }
-    timerRunning = false;
   }
 
   function showConfetti() {
-    confettiContainer.innerHTML = ''; // Clear any existing confetti
     for (let i = 0; i < 100; i++) {
       const confetto = document.createElement('div');
-      confetto.style.position = 'absolute';
-      confetto.style.width = '10px';
-      confetto.style.height = '10px';
-      confetto.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
       confetto.style.left = Math.random() * 100 + 'vw';
-      confetto.style.top = Math.random() * 100 + 'vh';
-      confetto.style.opacity = '0';
-      confetto.style.animation = 'confetti-fall 2s linear infinite';
+      confetto.style.animationDelay = Math.random() * 2 + 's';
       confettiContainer.appendChild(confetto);
     }
     confettiContainer.style.display = 'block';
-    setTimeout(() => {
-      confettiContainer.style.display = 'none';
-    }, 5000);
   }
 
-  function startBlinking() {
-    let isYellow = true;
-    const blinkInterval = setInterval(() => {
-      document.body.style.backgroundColor = isYellow ? "#0000ff" : "#ffff00";
-      isYellow = !isYellow;
-    }, 500);
-    setTimeout(() => {
-      clearInterval(blinkInterval);
-      document.body.style.backgroundColor = "#ffffff"; // Reset background color after blinking
-    }, 5000);
-  }
-
-  // Minimal CSS for confetti animation
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes confetti-fall {
-      to {
-        transform: translate3d(0, 100vh, 0);
-        opacity: 1;
-      }
+  function updateLeaderboard(finalTime) {
+    const leaderboard = document.getElementById('leaderboard');
+    let currentScores = leaderboard.value.split('\n');
+    const newScore = `New Player - ${finalTime.toFixed(2)}`;
+    currentScores.push(newScore);
+    currentScores.sort((a, b) => parseFloat(a.split('-')[1]) - parseFloat(b.split('-')[1]));
+    if (currentScores.length > 5) {
+      currentScores.pop();
     }
-  `;
-  document.head.appendChild(style);
+    leaderboard.value = currentScores.join('\n');
+  }
 </script>
 
 </body>
