@@ -191,13 +191,51 @@
     font-size: 50px;
     cursor: pointer;
   }
+  .popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 5px solid #32cd32;
+    border-radius: 10px;
+    z-index: 1001;
+    text-align: center;
+  }
+  .popup h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #32cd32;
+  }
+  .popup p {
+    font-size: 18px;
+    color: #4682b4;
+  }
 </style>
 </head>
 <body>
 
+<div class="popup" id="popup">
+  <h2>Regler og Instruksjoner</h2>
+  <p>Velkommen til det mest sprø spillet du noen gang har spilt! Her er reglene:</p>
+  <ul style="text-align: left;">
+    <li>Trykk på "Start"-knappen for å starte klokken.</li>
+    <li>Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder.</li>
+    <li>Treffer du riktig tid?</li>
+    <li>Klarer du det? Du vil gå videre til FISKESPILLET!</li>
+    <li>I fiskespillet må fisken din spise 10 grønne pellets for å vinne.</li>
+    <li>Men pass deg for de røde pelletsene, de er skumle!</li>
+    <li>Du kan styre fisken ved å dra den med musen eller ved å tilte telefonen.</li>
+    <li>Når du har samlet 10 grønne pellets, går du videre til MATCH SPILLET!</li>
+    <li>I match spillet må du finne de to matchende ikonene innen 30 sekunder!</li>
+  </ul>
+  <button class="button" onclick="closePopup()">Start Spillet</button>
+</div>
+
 <div class="main">
   <h1>Stopp Tiden Spill</h1>
-  <p>Velkommen til det mest sprø spillet du noen gang har spilt! Trykk på "Start"-knappen for å starte klokken. Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Treffer du? Konfetti og fargerike lys vil regne over deg! Klarer du det? Du vil gå videre til FISKESPILLET, hvor fisken din må spise 10 grønne pellets for å vinne. Men pass deg for de røde pelletsene, de er skumle! Hvis du overlever, må du finne du like. Lykke til!</p>
   <div id="pulsingFish">🐟</div>
   <div class="digital-timer" id="digitalTimer">0.00</div>
   <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
@@ -247,12 +285,21 @@
   const trophyElement = document.getElementById('trophy');
   const matchGameElement = document.getElementById('matchGame');
   const pulsingFishElement = document.getElementById('pulsingFish');
+  const popupElement = document.getElementById('popup');
   let timerInterval;
   let lastMouseX = 0;
   let lastMouseY = 0;
   const colors = ['#ff6347', '#4682b4', '#32cd32', '#ffd700', '#8a2be2'];
   let pelletsCollected = 0;
   const requiredPellets = 10;
+
+  function showPopup() {
+    popupElement.style.display = 'block';
+  }
+
+  function closePopup() {
+    popupElement.style.display = 'none';
+  }
 
   function updateClock() {
     const now = new Date().getTime();
@@ -350,6 +397,7 @@
     fishGameElement.style.display = 'block';
     spawnPellets();
     enableFishDrag();
+    enableGyroControl();
   }
 
   function enableFishDrag() {
@@ -384,6 +432,20 @@
     fishElement.ondragstart = function() {
       return false;
     };
+  }
+
+  function enableGyroControl() {
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', function(event) {
+        const tiltX = event.gamma; // Left to right
+        const tiltY = event.beta; // Front to back
+
+        if (tiltX && tiltY) {
+          fishElement.style.left = (window.innerWidth / 2 + tiltX * 5) + 'px';
+          fishElement.style.top = (window.innerHeight / 2 + tiltY * 5) + 'px';
+        }
+      });
+    }
   }
 
   function spawnPellets() {
@@ -495,7 +557,8 @@
     finalWinMessage.style.position = 'fixed';
     finalWinMessage.style.top = '50%';
     finalWinMessage.style.left = '50%';
-    finalWinMessage.style.transform = 'translate(-50%, -50%)'; finalWinMessage.style.fontSize = '48px';
+    finalWinMessage.style.transform = 'translate(-50%, -50%)';
+    finalWinMessage.style.fontSize = '48px';
     finalWinMessage.style.color = 'green';
     finalWinMessage.style.background = 'white';
     finalWinMessage.style.padding = '20px';
@@ -524,7 +587,7 @@
     }, 1000);
   }
 
-  startClock();
+  showPopup();
 </script>
 
 </body>
