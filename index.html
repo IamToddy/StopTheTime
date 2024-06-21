@@ -170,6 +170,12 @@
     setInterval(updateClock, 1000);
   }
 
+  function resetClock() {
+    startTime = new Date().getTime();
+    attempts = 0;
+    messageElement.textContent = '';
+  }
+
   function recordTime() {
     attempts++;
     if (attempts > maxAttempts) {
@@ -184,7 +190,7 @@
       messageElement.textContent = 'Gratulerer, du traff nøyaktig!';
       showConfettiAndBlinking();
       updateLeaderboard(finalTime);
-      attempts = 0;
+      resetClock();
     } else if (attempts === maxAttempts) {
       showSadFace();
     }
@@ -194,7 +200,7 @@
     sadFaceElement.style.display = 'block';
     setTimeout(() => {
       sadFaceElement.style.display = 'none';
-      attempts = 0;
+      resetClock();
     }, 3000);
   }
 
