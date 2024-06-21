@@ -11,7 +11,7 @@
     align-items: center;
     justify-content: center;
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #f8f9fa;
     min-height: 100vh;
     margin: 0;
   }
@@ -25,7 +25,7 @@
   .clock {
     width: 200px;
     height: 200px;
-    border: 10px solid #ff00ff;
+    border: 10px solid #ff6347;
     border-radius: 50%;
     position: relative;
     background: white;
@@ -33,7 +33,7 @@
   .hand {
     width: 50%;
     height: 6px;
-    background: #0000ff;
+    background: #4682b4;
     position: absolute;
     top: 50%;
     transform-origin: 100%;
@@ -41,12 +41,12 @@
   }
   .second-hand {
     height: 3px;
-    background: #00ff00;
+    background: #32cd32;
   }
   .center {
     width: 10px;
     height: 10px;
-    background: #ff00ff;
+    background: #ff6347;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -58,9 +58,9 @@
     font-size: 24px;
     margin: 20px;
     cursor: pointer;
-    background-color: #00ff00;
-    border: 2px solid #ff00ff;
-    color: #0000ff;
+    background-color: #32cd32;
+    border: 2px solid #ff6347;
+    color: #4682b4;
   }
   .message {
     font-size: 24px;
@@ -89,7 +89,7 @@
     position: absolute;
     width: 10px;
     height: 10px;
-    background: red;
+    background: #ffd700;
     opacity: 0;
     animation: confetti-fall 2s linear infinite;
   }
@@ -104,6 +104,8 @@
 <body>
 
 <div class="main">
+  <h1>Stopp Tiden Spill</h1>
+  <p>Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Hvis du treffer riktig tid, vil du se konfetti og skjermen vil blinke i forskjellige farger. De beste tidene vil bli lagret på lederbordet.</p>
   <div class="clock">
     <div class="hand second-hand" id="secondHand"></div>
     <div class="center"></div>
@@ -130,11 +132,10 @@
 
 <script>
   let startTime = new Date().getTime();
-  let timerInterval;
   const confettiContainer = document.getElementById('confetti');
   const messageElement = document.getElementById('message');
   let colorIndex = 0;
-  const colors = ['red', 'green', 'blue', 'yellow', 'pink'];
+  const colors = ['#ff6347', '#4682b4', '#32cd32', '#ffd700', '#8a2be2'];
 
   function updateClock() {
     const now = new Date().getTime();
@@ -167,7 +168,7 @@
     }, 300);
     setTimeout(() => {
       clearInterval(blinkInterval);
-      document.body.style.backgroundColor = "#f0f0f0";
+      document.body.style.backgroundColor = "#f8f9fa";
     }, 10000);
   }
 
