@@ -22,6 +22,50 @@
     align-items: center;
     justify-content: center;
   }
+  .clock {
+    width: 200px;
+    height: 200px;
+    border: 10px solid #ff00ff;
+    border-radius: 50%;
+    position: relative;
+    background: white;
+  }
+  .hand {
+    width: 50%;
+    height: 6px;
+    background: #0000ff;
+    position: absolute;
+    top: 50%;
+    transform-origin: 100%;
+    transform: rotate(90deg);
+  }
+  .second-hand {
+    height: 3px;
+    background: #00ff00;
+  }
+  .center {
+    width: 10px;
+    height: 10px;
+    background: #ff00ff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+  .button {
+    padding: 20px 40px;
+    font-size: 24px;
+    margin: 20px;
+    cursor: pointer;
+    background-color: #00ff00;
+    border: 2px solid #ff00ff;
+    color: #0000ff;
+  }
+  .message {
+    font-size: 24px;
+    margin-top: 20px;
+  }
   .leaderboard {
     width: 300px;
     padding: 10px;
@@ -29,15 +73,6 @@
     border: 1px solid #ddd;
     margin: 10px;
     text-align: left;
-  }
-  .timer {
-    font-size: 48px;
-    margin: 20px;
-    color: #ff00ff;
-  }
-  .message {
-    font-size: 24px;
-    margin-top: 20px;
   }
   .confetti {
     display: none;
@@ -64,22 +99,16 @@
       opacity: 1;
     }
   }
-  .button {
-    padding: 20px 40px;
-    font-size: 24px;
-    margin: 10px;
-    cursor: pointer;
-    background-color: #00ff00;
-    border: 2px solid #ff00ff;
-    color: #0000ff;
-  }
 </style>
 </head>
 <body>
 
 <div class="main">
-  <div class="timer" id="timer">0.00</div>
-  <button class="button" id="toggleButton" onclick="toggleTimer()">Start</button>
+  <div class="clock">
+    <div class="hand second-hand" id="secondHand"></div>
+    <div class="center"></div>
+  </div>
+  <button class="button" id="stopButton" onclick="recordTime()">Stopp</button>
   <div class="message" id="message"></div>
 </div>
 
@@ -100,49 +129,34 @@
 <div class="confetti" id="confetti"></div>
 
 <script>
-  let startTime;
+  let startTime = new Date().getTime();
   let timerInterval;
-  let running = false;
   const confettiContainer = document.getElementById('confetti');
   const messageElement = document.getElementById('message');
-  const toggleButton = document.getElementById('toggleButton');
   let colorIndex = 0;
   const colors = ['red', 'green', 'blue', 'yellow', 'pink'];
 
-  function toggleTimer() {
-    if (running) {
-      stopTimer();
-    } else {
-      startTimer();
-    }
+  function updateClock() {
+    const now = new Date().getTime();
+    const elapsedTime = (now - startTime) / 1000;
+    const seconds = elapsedTime % 60;
+    const secondsDeg = ((seconds / 60) * 360) + 90;
+    document.getElementById('secondHand').style.transform = `rotate(${secondsDeg}deg)`;
   }
 
-  function startTimer() {
-    startTime = new Date().getTime();
-    timerInterval = setInterval(updateTimer, 10);
-    running = true;
-    toggleButton.textContent = "Stopp";
-    messageElement.textContent = '';
+  function startClock() {
+    setInterval(updateClock, 1000);
   }
 
-  function updateTimer() {
-    const currentTime = new Date().getTime();
-    const elapsedTime = (currentTime - startTime) / 1000;
-    document.getElementById('timer').textContent = elapsedTime.toFixed(2);
-  }
-
-  function stopTimer() {
-    clearInterval(timerInterval);
-    const finalTime = parseFloat(document.getElementById('timer').textContent);
-    if (finalTime === 5.00 || finalTime === 10.00 || finalTime === 15.50) {
+  function recordTime() {
+    const now = new Date().getTime();
+    const finalTime = ((now - startTime) / 1000).toFixed(2);
+    messageElement.textContent = `Du trykket på ${finalTime} sekunder.`;
+    if (finalTime == 5.00 || finalTime == 10.00 || finalTime == 15.50) {
       messageElement.textContent = 'Gratulerer, du traff nøyaktig!';
       showConfettiAndBlinking();
       updateLeaderboard(finalTime);
-    } else {
-      messageElement.textContent = `Du stoppet på ${finalTime.toFixed(2)} sekunder. Prøv igjen!`;
     }
-    running = false;
-    toggleButton.textContent = "Start";
   }
 
   function showConfettiAndBlinking() {
@@ -174,7 +188,7 @@
   function updateLeaderboard(finalTime) {
     const leaderboard = document.getElementById('leaderboard');
     let currentScores = leaderboard.value.trim().split('\n');
-    const newScore = `Ny Spiller - ${finalTime.toFixed(2)}`;
+    const newScore = `Ny Spiller - ${finalTime}`;
     currentScores.push(newScore);
     currentScores.sort((a, b) => parseFloat(a.split('-')[1]) - parseFloat(b.split('-')[1]));
     if (currentScores.length > 8) {
@@ -182,6 +196,8 @@
     }
     leaderboard.value = currentScores.join('\n');
   }
+
+  startClock();
 </script>
 
 </body>
