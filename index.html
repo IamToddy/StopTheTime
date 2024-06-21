@@ -24,8 +24,11 @@
   }
   .clock-container {
     position: relative;
-    width: 100%;
-    height: 60vh;
+    width: 200px;
+    height: 200px;
+    border: 10px solid #ff6347;
+    border-radius: 50%;
+    background: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -33,7 +36,7 @@
   .hand {
     position: absolute;
     width: 50%;
-    height: 10px;
+    height: 6px;
     background: black;
     transform-origin: 100%;
     transition: transform 0.2s ease;
@@ -41,9 +44,33 @@
     transform: translateX(-50%) rotate(90deg);
   }
   .second-hand {
-    height: 5px;
+    height: 3px;
     background: red;
   }
+  .center {
+    width: 10px;
+    height: 10px;
+    background: #ff6347;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+  .number {
+    position: absolute;
+    font-size: 18px;
+    font-weight: bold;
+    color: #4682b4;
+  }
+  .number:nth-child(1)  { top: 10px; left: 50%; transform: translateX(-50%); }
+  .number:nth-child(2)  { top: 25%; left: 90%; transform: translate(-50%, -50%); }
+  .number:nth-child(3)  { top: 50%; left: 90%; transform: translate(-50%, -50%); }
+  .number:nth-child(4)  { top: 75%; left: 90%; transform: translate(-50%, -50%); }
+  .number:nth-child(5)  { top: 90%; left: 50%; transform: translateX(-50%); }
+  .number:nth-child(6)  { top: 75%; left: 10%; transform: translate(-50%, -50%); }
+  .number:nth-child(7)  { top: 50%; left: 10%; transform: translate(-50%, -50%); }
+  .number:nth-child(8)  { top: 25%; left: 10%; transform: translate(-50%, -50%); }
   .digital-timer {
     font-size: 48px;
     margin-top: 20px;
@@ -188,6 +215,11 @@
   <p>Velkommen til det mest sprø spillet du noen gang har spilt! Trykk på "Start"-knappen for å starte klokken. Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Treffer du? Konfetti og fargerike lys vil regne over deg! Klarer du det? Du vil gå videre til FISKESPILLET, hvor fisken din må spise 10 grønne pellets for å vinne. Men pass deg for de røde pelletsene, de er skumle!</p>
   <div class="clock-container">
     <div class="hand second-hand" id="secondHand"></div>
+    <div class="center"></div>
+    <div class="number">12</div>
+    <div class="number">3</div>
+    <div class="number">6</div>
+    <div class="number">9</div>
   </div>
   <div class="digital-timer" id="digitalTimer">0.00</div>
   <button class="button" id="startButton" onclick="startTimer()">Start</button>
@@ -210,7 +242,7 @@
 </div>
 
 <div class="confetti" id="confetti"></div>
-<div class="happy-face" id="happyFace"><p>😊</p></div>
+<div class="happy-face" id="happyFace"><p>😊</
 <div class="sad-face" id="sadFace"><p>☹</p><p>Prøv igjen</p></div>
 <div class="fish-game" id="fishGame">
   <div class="fish" id="fish">🐟</div>
@@ -238,21 +270,10 @@
   const colors = ['#ff6347', '#4682b4', '#32cd32', '#ffd700', '#8a2be2'];
   let pelletsCollected = 0;
   const requiredPellets = 10;
-  let speedMultiplier = 1;
 
   function updateClock() {
     const now = new Date().getTime();
-    let elapsedTime = (now - startTime) / 1000;
-
-    if (elapsedTime > 5 && elapsedTime <= 10) {
-      speedMultiplier = 2;
-    } else if (elapsedTime > 10 && elapsedTime <= 15.5) {
-      speedMultiplier = 3;
-    } else if (elapsedTime > 15.5) {
-      speedMultiplier = 4;
-    }
-
-    elapsedTime = elapsedTime * speedMultiplier;
+    const elapsedTime = (now - startTime) / 1000;
     const seconds = elapsedTime % 60;
     const secondsDeg = ((seconds / 60) * 360) + 90;
     document.getElementById('secondHand').style.transform = `rotate(${secondsDeg}deg) translateX(-50%)`;
@@ -270,7 +291,6 @@
   function startTimer() {
     startTime = new Date().getTime();
     attempts = 0;
-    speedMultiplier = 1;
     messageElement.textContent = '';
     startClock();
   }
@@ -279,7 +299,6 @@
     stopClock();
     startTime = new Date().getTime();
     attempts = 0;
-    speedMultiplier = 1;
     messageElement.textContent = '';
     startClock();
   }
@@ -287,7 +306,7 @@
   function recordTime() {
     attempts++;
     const now = new Date().getTime();
-    const finalTime = ((now - startTime) / 1000 * speedMultiplier).toFixed(2);
+    const finalTime = ((now - startTime) / 1000).toFixed(2);
     messageElement.textContent = `Du trykket på ${finalTime} sekunder.`;
 
     if (requiredTimes.includes(parseFloat(finalTime))) {
