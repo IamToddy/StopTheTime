@@ -171,8 +171,7 @@
     position: absolute;
     width: 50px;
     height: 50px;
-    background: url('https://i.imgur.com/5iyA6hu.png') no-repeat center center;
-    background-size: contain;
+    font-size: 50px;
     cursor: pointer;
   }
   .pellet {
@@ -190,8 +189,7 @@
   .trophy-grow {
     width: 100px;
     height: 100px;
-    background: url('https://i.imgur.com/3JWgsrz.png') no-repeat center center;
-    background-size: contain;
+    font-size: 100px;
     animation: grow 5s infinite;
   }
   @keyframes grow {
@@ -210,7 +208,7 @@
 
 <div class="main">
   <h1>Stopp Tiden Spill</h1>
-  <p>Trykk på "Start"-knappen for å starte klokken. Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. De beste tidene vil bli lagret på lederbordet. Du har tre forsøk per gang. Level 2 surprise 😊</p>
+  <p>Velkommen til det mest sprø spillet du noen gang har spilt! Trykk på "Start"-knappen for å starte klokken. Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Treffer du? Konfetti og fargerike lys vil regne over deg! Klarer du det? Du vil gå videre til FISKESPILLET, hvor fisken din må spise 10 grønne pellets for å vinne. Men pass deg for de røde pelletsene, de er skumle!</p>
   <div class="clock">
     <div class="number">12</div>
     <div class="number">1</div>
@@ -251,10 +249,10 @@
 <div class="happy-face" id="happyFace"><p>😊</p></div>
 <div class="sad-face" id="sadFace"><p>☹</p><p>Prøv igjen</p></div>
 <div class="fish-game" id="fishGame">
-  <div class="fish" id="fish"></div>
+  <div class="fish" id="fish">🐟</div>
 </div>
 <div class="trophy" id="trophy">
-  <div class="trophy-grow"></div>
+  <div class="trophy-grow">🏆</div>
 </div>
 
 <script>
@@ -398,6 +396,10 @@
         document.removeEventListener('mousemove', onMouseMove);
         fishElement.onmouseup = null;
       };
+    };
+
+    fishElement.ondragstart = function() {
+      return false;
     };
   }
 
