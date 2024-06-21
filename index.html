@@ -78,8 +78,14 @@
     margin: 20px;
     cursor: pointer;
     background-color: #32cd32;
-    border: 2px solid #ff6347;
+    border: 5px solid #ff6347;
     color: #4682b4;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  }
+  .button:hover {
+    background-color: #ff6347;
+    color: #32cd32;
+    transform: scale(1.1);
   }
   .message {
     font-size: 24px;
@@ -131,8 +137,11 @@
     border-radius: 50%;
     text-align: center;
     line-height: 200px;
-    font-size: 100px;
+    font-size: 50px;
     color: red;
+  }
+  .sad-face p {
+    margin: 0;
   }
 </style>
 </head>
@@ -140,7 +149,7 @@
 
 <div class="main">
   <h1>Stopp Tiden Spill</h1>
-  <p>Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Hvis du treffer riktig tid, vil du se konfetti og skjermen vil blinke i forskjellige farger. De beste tidene vil bli lagret på lederbordet. Du har tre forsøk per gang.</p>
+  <p>Trykk på "Start"-knappen for å starte klokken. Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder. Hvis du treffer riktig tid, vil du se konfetti og skjermen vil blinke i forskjellige farger. De beste tidene vil bli lagret på lederbordet. Du har tre forsøk per gang.</p>
   <div class="clock">
     <div class="number">12</div>
     <div class="number">1</div>
@@ -158,6 +167,7 @@
     <div class="center"></div>
   </div>
   <div class="digital-timer" id="digitalTimer">0.00</div>
+  <button class="button" id="startButton" onclick="startTimer()">Start</button>
   <button class="button" id="stopButton" onclick="recordTime()">Stopp</button>
   <div class="message" id="message"></div>
 </div>
@@ -178,16 +188,17 @@
 
 <div class="confetti" id="confetti"></div>
 
-<div class="sad-face" id="sadFace">☹</div>
+<div class="sad-face" id="sadFace"><p>☹</p><p>Prøv igjen</p></div>
 
 <script>
-  let startTime = new Date().getTime();
+  let startTime;
   let attempts = 0;
   const maxAttempts = 3;
   const confettiContainer = document.getElementById('confetti');
   const messageElement = document.getElementById('message');
   const sadFaceElement = document.getElementById('sadFace');
   const digitalTimerElement = document.getElementById('digitalTimer');
+  let timerInterval;
   let colorIndex = 0;
   const colors = ['#ff6347', '#4682b4', '#32cd32', '#ffd700', '#8a2be2'];
 
@@ -201,22 +212,29 @@
   }
 
   function startClock() {
-    setInterval(updateClock, 100);
+    timerInterval = setInterval(updateClock, 100);
   }
 
-  function resetClock() {
+  function stopClock() {
+    clearInterval(timerInterval);
+  }
+
+  function startTimer() {
     startTime = new Date().getTime();
     attempts = 0;
     messageElement.textContent = '';
+    startClock();
   }
 
-  function recordTime() {
+  function resetClock() {
+    stopClock();
+    startTime = new Date().getTime();
+    attempts = 0;
+    messageElement.textContent = '';
+    startClock();
+  }
+function recordTime() {
     attempts++;
-    if (attempts > maxAttempts) {
-      showSadFace();
-      return;
-    }
-
     const now = new Date().getTime();
     const finalTime = ((now - startTime) / 1000).toFixed(2);
     messageElement.textContent = `Du trykket på ${finalTime} sekunder.`;
@@ -236,9 +254,9 @@
       sadFaceElement.style.display = 'none';
       resetClock();
     }, 3000);
-}
+  }
 
-function showConfettiAndBlinking() {
+  function showConfettiAndBlinking() {
     showConfetti();
     let blinkInterval = setInterval(() => {
       document.body.style.backgroundColor = colors[colorIndex];
@@ -281,4 +299,3 @@ function showConfettiAndBlinking() {
 
 </body>
 </html>
-  
