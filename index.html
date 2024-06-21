@@ -116,7 +116,7 @@
   function stopTimer() {
     clearInterval(timerInterval);
     const finalTime = parseFloat(document.getElementById('timer').textContent);
-    if (finalTime === 10.00) {
+    if (finalTime >= 10.00 && finalTime < 10.10) { // To consider it as a close enough match to 10 seconds
       document.body.style.backgroundColor = "yellow";
       document.getElementById('message').textContent = 'Gratulerer, du er dagens 10er!';
       showConfetti();
