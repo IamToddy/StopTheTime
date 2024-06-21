@@ -8,10 +8,10 @@
 <body>
 
 <h1>Stop the Timer at Exactly 10 Seconds!</h1>
-<div id="timer">0.00</div>
-<button onclick="startTimer()">Start</button>
-<button onclick="stopTimer()">Stop</button>
-<div id="message"></div>
+<div id="timer" style="font-size: 2em; margin: 20px;">0.00</div>
+<button id="startButton" style="font-size: 1em; padding: 10px 20px;" onclick="startTimer()">Start</button>
+<button id="stopButton" style="font-size: 1em; padding: 10px 20px;" onclick="stopTimer()">Stop</button>
+<div id="message" style="font-size: 1.5em; margin-top: 20px;"></div>
 
 <script>
   let startTime;
@@ -28,7 +28,7 @@
 
   function updateTimer() {
     const currentTime = new Date().getTime();
-    const elapsedTime = (currentTime - startTime) / 1000;
+    const elapsedTime = (currentTime - startTime) / 500;  // Gjør at tiden går dobbelt så fort
     document.getElementById('timer').textContent = elapsedTime.toFixed(2);
   }
 
