@@ -224,12 +224,13 @@
   <ul style="text-align: left; padding: 0 10px;">
     <li>Trykk på "Start"-knappen for å starte klokken.</li>
     <li>Trykk på "Stopp"-knappen når klokken viser nøyaktig 5.00, 10.00 eller 15.50 sekunder.</li>
+    <li>Treffer du riktig tid? Konfetti og fargerike lys vil regne over deg!</li>
     <li>Klarer du det? Du vil gå videre til FISKESPILLET!</li>
     <li>I fiskespillet må fisken din spise 10 grønne pellets for å vinne.</li>
     <li>Men pass deg for de røde pelletsene, de er skumle!</li>
     <li>Du kan styre fisken ved å dra den med musen eller ved å tilte telefonen.</li>
     <li>Når du har samlet 10 grønne pellets, går du videre til MATCH SPILLET!</li>
-    <li>I match spillet må du finne de to matchende ikonene innen 30 sekunder.</li>
+    <li>I match spillet må du finne de to matchende ikonene innen 30 sekunder for å vinne hele spillet!</li>
   </ul>
   <button class="button" onclick="closePopup()">Start Spillet</button>
 </div>
@@ -468,6 +469,7 @@
             showMatchGamePopup();
           }
         } else {
+          pellet.remove();
           showSadFace();
           resetClock();
           fishGameElement.style.display = 'none';
@@ -499,7 +501,7 @@
   }
 
   function spawnIcons() {
-    const icons = ['🐟', '🐠', '🐡', '🐬', '🐳', '🐋', '🐙', '🦀', '🦐', '🦑', '🐚', '🐌', '🐞', '🦋', '🌸', '🌼', '🌻', '🐦', '🐧', '🐨', '🐒', '🐵', '🐝', '🐺', '🦁', '🦊', '🐯', '🐴', '🦄', '🐲', '🐍', '🐢', '🦈', '🐅', '🐆', '🦓', '🐫', '🦍', '🐘', '🐊', '🐜', '🦋', '🐝', '🐞', '🦗', '🦂', '🕷️', '🦄', '🐸', '🦇', '🦉', '🐓', '🦃', '🦤', '🦦', '🦥', '🦩', '🦚'];
+    const icons = ['🐟', '🐠', '🐡', '🐬', '🐳', '🐋', '🐙', '🦀', '🦐', '🦑', '🐚', '🐌', '🐞', '🦋', '🌸', '🌼', '🌻', '🐦', '🐧', '🐨', '🐒', '🐵', '🐝', '🐺', '🦁', '🦊', '🐯', '🐴', '🦄', '🐲', '🐍', '🐢', '🦈', '🐅', '🦓', '🐫', '🦍', '🐘', '🐊', '🐜', '🦋', '🐝', '🐞', '🦗', '🦂', '🕷️', '🦄', '🐸', '🦇', '🦉', '🐓', '🦃', '🦤', '🦦', '🦥', '🦩', '🦚'];
     const positions = new Set();
     while (positions.size < 300) {
       const x = Math.random() * (window.innerWidth - 50);
@@ -513,7 +515,7 @@
       const matchIcon = icons[Math.floor(Math.random() * icons.length)];
       matchIcons.push(matchIcon);
     }
-    
+
     for (let i = 0; i < 300; i++) {
       const icon = document.createElement('div');
       icon.classList.add('icon');
